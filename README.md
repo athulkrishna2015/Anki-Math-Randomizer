@@ -1,4 +1,5 @@
-# Anki Math Randomizer (Static Daily & Deck-Aware)
+# [Anki Math Randomizer](https://github.com/athulkrishna2015/Anki-Math-Randomizer) (Static Daily & Deck-Aware)
+Install via [ankiweb](https://ankiweb.net/shared/info/263752551) 
 
 A robust Anki add-on that randomizes mathematical variables in your flashcards to prevent rote pattern recognition.
 
