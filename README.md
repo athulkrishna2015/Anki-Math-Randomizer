@@ -1,90 +1,144 @@
-# [Anki Math Randomizer](https://github.com/athulkrishna2015/Anki-Math-Randomizer) (Static Daily & Deck-Aware)
-Install via [ankiweb](https://ankiweb.net/shared/info/263752551) 
+# [Anki Math Randomizer](https://github.com/athulkrishna2015/Anki-Math-Randomizer)
 
-A robust Anki add-on that randomizes mathematical variables in your flashcards to prevent rote pattern recognition.
+Install via [AnkiWeb](https://ankiweb.net/shared/info/263752551).
 
-## Key Features
+Anki Math Randomizer is a desktop add-on that rewrites placeholder variables in your math cards into visually distinct symbols. The generated result is stored directly in the note, so the same randomized card also syncs cleanly to AnkiDroid and AnkiMobile.
 
-* **Static Rendering:** Converts your template variables (e.g., `VL1`) into actual characters (e.g., `X`) inside the card fields. Zero render-time glitches.
-* **Deck-Aware Trigger:** Automatically checks for cards needing updates when you enter the **Review Screen** for a specific deck.
-* **Daily Frequency:** Randomizes cards once per day. If you review a card multiple times in one day, it stays consistent to avoid confusion.
-* **Smart Conflict Avoidance:**
-    * **Static Scanning:** Scans your equation for existing variables (e.g., if you wrote `x + y`, it won't pick `x` or `y` as random variables).
-    * **Visual Safety:** Prevents visually similar symbols from appearing together (e.g., never mixes `l`, `I`, `1`, and `|`).
-* **Variable Pools:** Supports Upper/Lower Latin, Upper/Lower Greek, and Numbers.
+## What It Does
 
-## Setup & Migration (Crucial Step)
+- Creates or updates a dedicated note type named `Math Randomizer (Daily Static)`.
+- Reads placeholders from `Source Front` and `Source Back`.
+- Writes the rendered result to `Front` and `Back`.
+- Randomizes each matching note at most once per day.
+- Keeps front/back substitutions consistent for the same note.
+- Avoids visually confusing combinations such as `I`, `l`, `1`, and `|`.
+- Detects existing static symbols in LaTeX and regular text so they are less likely to be reused.
 
-Because this add-on writes data to specific fields, you must set up the Note Type correctly.
+## Placeholder Tags
 
-1.  **Restart Anki** after installing.
-2.  Go to the **Browser** and select your math cards.
-3.  Right-click → **Change Note Type**.
-4.  Select **"Math Randomizer (Daily Static)"**.
-5.  **Map your fields carefully:**
-    * Map your **Old Code/Question** → **Source Front**
-    * Map your **Old Answer** → **Source Back**
-    * **Front** → *(Leave Empty / Ignore)*
-    * **Back** → *(Leave Empty / Ignore)*
-    * **LastUpdate** → *(Leave Empty / Ignore)*
+Use any numeric suffix you want, such as `VL1`, `Vg2`, or `VV99`.
 
-## How to Use
+| Tag | Pool | Example outputs |
+| --- | --- | --- |
+| `VL[n]` | Uppercase Latin | `A`, `M`, `X` |
+| `Vl[n]` | Lowercase Latin | `a`, `m`, `x` |
+| `VG[n]` | Uppercase Greek | `\Gamma`, `\Lambda`, `\Omega` |
+| `Vg[n]` | Lowercase Greek | `\alpha`, `\iota`, `\upsilon` |
+| `VN[n]` | Numbers | `2`, `5`, `9` |
+| `VV[n]` | Mixed Latin/Greek | `Q`, `\phi`, `\Psi` |
 
-### 1. Creating Cards
-You no longer type into the "Front" field. Instead, use the **Source** fields.
+## Setup
 
-* **Source Front:** Enter your equation with variable tags.
-    * *Example:* `\( \int VL1 \, dVL1 \)`
-* **Source Back:** Enter the answer.
-    * *Example:* `\( \frac{VL1^2}{2} + C \)`
-* **Front / Back:** Leave these empty. The add-on will fill them automatically.
+1. Install the add-on and restart Anki.
+2. Open the Browser and select the notes you want to migrate.
+3. Use `Change Note Type...` and pick `Math Randomizer (Daily Static)`.
+4. Map your original prompt/content field to `Source Front`.
+5. Map your original answer/solution field to `Source Back`.
+6. Leave `Front`, `Back`, and `LastUpdate` empty so the add-on can manage them.
 
-### 2. Studying
-1.  Click on a Deck.
-2.  Click **"Study Now"**.
-3.  The add-on instantly scans all **Due** or **New** cards in that deck.
-4.  If a card hasn't been randomized today, it swaps the variables (e.g., changing `VL1` to `X`).
-5.  You see `\( \int X \, dX \)` on your screen.
+If the note type already exists, the add-on now fills in any missing required fields automatically.
 
-## Variable Tags Reference
+## Example
 
-You can use any index number (e.g., `VL1`, `VL2`, `Vg99`).
+`Source Front`
 
-| Tag | Type | Description | Example Output |
-| :--- | :--- | :--- | :--- |
-| **VL[n]** | **Upper Latin** | Uppercase A-Z | $A, X, M$ |
-| **Vl[n]** | **Lower Latin** | Lowercase a-z | $a, x, m$ |
-| **VG[n]** | **Upper Greek** | Uppercase Greek | $\Gamma, \Delta, \Omega$ |
-| **Vg[n]** | **Lower Greek** | Lowercase Greek | $\alpha, \beta, \theta$ |
-| **VN[n]** | **Numbers** | Integers (2-9) | $2, 5, 9$ |
-| **VV[n]** | **Mixed** | Any Latin or Greek | $X, \lambda, \Omega, m$ |
+```tex
+\( \int VL1 \, dVL1 \)
+```
 
-## Visual Conflict Safety
+`Source Back`
 
-The add-on ensures the following groups of symbols never appear together in the same equation:
+```tex
+\( \frac{VL1^2}{2} + C \)
+```
 
-* **Verticals:** `I`, `l`, `1`, `|`
-* **Circles:** `O`, `o`, `0`, `Q`, `\Theta`, `\theta`
-* **V-shapes:** `v`, `\nu`, `\upsilon`
-* **U-shapes:** `u`, `\mu`
-* **W-shapes:** `w`, `\omega`
-* **X-shapes:** `x`, `\chi`, `\times`
-* **P-shapes:** `p`, `\rho`
-* **B-shapes:** `B`, `\beta`
+One day the generated card may become:
+
+```tex
+\( \int X \, dX \)
+\( \frac{X^2}{2} + C \)
+```
+
+On another day it may become:
+
+```tex
+\( \int \lambda \, d\lambda \)
+\( \frac{\lambda^2}{2} + C \)
+```
+
+## When Randomization Runs
+
+The add-on checks for matching notes when you enter the review screen for the currently selected deck. It updates due, new, and learning cards in that deck before review continues.
+
+## Configuration
+
+Open `Tools -> Add-ons -> Math Randomizer -> Config` to manage the addon.
+
+The `General` tab lets you:
+
+- Enable or disable automatic randomization on review.
+- Choose whether due, new, and learning cards should be processed.
+- Control whether a summary tooltip is shown and how long it stays visible.
+- Decide whether the reviewer should refresh immediately after the current card is updated.
+- Decide whether the Math Randomizer note type should be created or repaired on profile open.
+- Keep using the `LastUpdate` field so each note stays stable for the rest of the day after it has been randomized.
+
+The config window now uses native Qt widgets. The `Support` tab keeps Ko-fi, UPI, BTC, and ETH options in the same native window without embedding a webpage.
 
 ## Troubleshooting
 
-**"My cards are empty!"**
-Check your Field Mapping. The data must be in **Source Front**, not Front. The "Front" field is overwritten by the script.
+`The card stayed the same today`
 
-**"The variable didn't change!"**
-The script only updates a card **once per day** to save processing power and avoid confusion during re-learning steps. Wait until tomorrow, or manually clear the `LastUpdate` field in the browser if you want to force a refresh.
+Each note is randomized once per day. The addon still uses the `LastUpdate` field to enforce that. Clear the `LastUpdate` field if you want to force a refresh before the next day.
 
-**"It's not working on AnkiDroid."**
-Sync your devices. Since the logic runs on the Desktop and saves the result as standard text, AnkiDroid just needs to sync to see the updated equations.
+`My variables are not changing`
+
+Make sure your placeholders are in `Source Front` or `Source Back`, not directly in `Front` or `Back`.
+
+`My deck name has spaces or subdecks`
+
+That is supported. The review query now escapes deck names correctly.
+
+`My cards contain HTML from the editor`
+
+That is supported too. The static-symbol scan strips HTML markup before choosing replacements.
 
 ## Support
 
-If you find this add-on useful, please consider supporting its development:
+Open `Tools -> Add-ons -> Math Randomizer -> Config` and switch to the `Support` tab. It includes:
+
+- Large, scrollable QR codes for UPI, BTC, and ETH.
+- One-click copy buttons for the UPI ID and wallet addresses.
+- A Ko-fi section with native Qt controls and a direct support link.
+
+Ko-fi:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D01W6NQT)
+
+Direct payment IDs:
+
+- `UPI`: `athulkrishnasv2015-2@okhdfcbank`
+- `BTC`: `bc1qrrek3m7sr33qujjrktj949wav6mehdsk057cfx`
+- `ETH`: `0xce6899e4903EcB08bE5Be65E44549fadC3F45D27`
+
+## Changelog
+
+### 2026-04-01
+
+- Added deck-aware daily randomization for notes using the `Math Randomizer (Daily Static)` note type.
+- Added conflict-aware variable selection across Latin, Greek, mixed-symbol, and number pools.
+- Improved parsing so existing HTML and LaTeX content do not interfere with variable replacement choices.
+- Added automatic note-type setup and missing-field repair on profile open.
+- Added a tabbed configuration window with `General` and `Support` tabs under `Tools -> Add-ons -> Math Randomizer -> Config`.
+- Added saved runtime settings for review-state filtering, tooltip behavior, reviewer refresh, and note-type maintenance.
+- Kept `LastUpdate` as the once-per-day guard for note regeneration.
+- Added large QR-based support options for UPI, BTC, and ETH, plus copy buttons for payment IDs.
+- Added Ko-fi links inside the native Qt support tab.
+- Added local versioning and packaging workflow via `bump.py`, `make_ankiaddon.py`, and `addon/VERSION`.
+- Split the addon implementation into smaller modules for easier maintenance.
+
+## Development
+
+Release tooling lives in [make_ankiaddon.py](make_ankiaddon.py) and [bump.py](bump.py). The current add-on version is stored in [addon/VERSION](addon/VERSION).
+
+For local development and release steps, see [DEVELOPMENT.md](DEVELOPMENT.md).
