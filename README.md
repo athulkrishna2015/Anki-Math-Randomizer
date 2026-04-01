@@ -82,3 +82,9 @@ The script only updates a card **once per day** to save processing power and avo
 
 **"It's not working on AnkiDroid."**
 Sync your devices. Since the logic runs on the Desktop and saves the result as standard text, AnkiDroid just needs to sync to see the updated equations.
+
+## Support
+
+If you find this add-on useful, please consider supporting its development:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/D1D01W6NQT)
